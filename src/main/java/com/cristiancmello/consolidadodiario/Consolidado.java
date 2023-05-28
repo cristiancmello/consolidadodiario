@@ -26,4 +26,7 @@ public class Consolidado {
 
     @Column(name = "data_hora_lancamento")
     private LocalDateTime dataEHoraDeLancamento;
+
+    @Column(name = "lancamento_id")
+    private Long lancamentoId;
 }

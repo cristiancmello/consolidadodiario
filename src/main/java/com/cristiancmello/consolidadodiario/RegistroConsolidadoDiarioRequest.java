@@ -15,4 +15,7 @@ public class RegistroConsolidadoDiarioRequest {
 
     @JsonProperty(value = "data_hora_lancamento")
     private String dataHoraLancamento;
+
+    @JsonProperty(value = "lancamento_id")
+    private String lancamentoId;
 }

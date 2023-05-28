@@ -24,6 +24,7 @@ public class ConsolidadoDiarioController {
             .dataEHoraDeLancamento(LocalDateTime.parse(request.getDataHoraLancamento()))
             .valor(valor)
             .tipoMovimentacao(TipoMovimentacao.valueOf(request.getTipoMovimentacao()))
+            .lancamentoId(Long.valueOf(request.getLancamentoId()))
             .build();
 
         consolidadoRepository.save(consolidado);
