@@ -33,8 +33,6 @@ public class ConsolidadoDiarioController {
 
         consolidadoRepository.save(consolidado);
 
-        consolidadoRepository.findAll().forEach(System.out::println);
-
         return RegistroConsolidadoDiarioResponse.builder()
             .mensagem("Registrado com sucesso! Contabilizando...")
             .build();
