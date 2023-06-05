@@ -4,7 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 
 @RestController
 @RequestMapping("consolidado-diario")
@@ -37,14 +41,27 @@ public class ConsolidadoDiarioController {
     }
 
     @GetMapping
-    String obtemConsolidadoDiario() {
-        var consolidados = consolidadoRepository.findAll();
+    ConsolidadoDiarioResponse obtemConsolidadoDiario(@RequestParam("data") String data) {
+        var formatoPadraoDeData = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        var localDateSolicitada = LocalDate.parse(data, formatoPadraoDeData);
+        var inicioDoDiaSolicitada = localDateSolicitada.atStartOfDay();
+        var fimDoDiaSolicitada = localDateSolicitada.atTime(LocalTime.MAX);
+
         var saldo = BigDecimal.valueOf(0);
+
+        var consolidados = consolidadoRepository
+            .findByDataEHoraDeLancamentoBetween(inicioDoDiaSolicitada, fimDoDiaSolicitada)
+            .stream()
+            .toList();
 
         for (var consolidado : consolidados) {
             saldo = saldo.add(consolidado.getValor());
         }
 
-        return saldo.toString();
+        var dataFormatada = inicioDoDiaSolicitada.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM));
+
+        return ConsolidadoDiarioResponse.builder()
+            .mensagem("No dia %s seu saldo foi de R$ %.2f".formatted(dataFormatada, saldo))
+            .build();
     }
 }
